@@ -30,7 +30,6 @@
 
 #include "navigation_link_3d.h"
 
-#include "mesh_instance_3d.h"
 #include "servers/navigation_server_3d.h"
 
 #ifdef DEBUG_ENABLED
@@ -56,8 +55,8 @@ void NavigationLink3D::_update_debug_mesh() {
 		debug_instance = RenderingServer::get_singleton()->instance_create();
 	}
 
-	if (!debug_mesh.is_valid()) {
-		debug_mesh = Ref<ArrayMesh>(memnew(ArrayMesh));
+	if (debug_mesh.is_null()) {
+		debug_mesh.instantiate();
 	}
 
 	RID nav_map = get_world_3d()->get_navigation_map();
@@ -453,7 +452,7 @@ void NavigationLink3D::set_travel_cost(real_t p_travel_cost) {
 }
 
 PackedStringArray NavigationLink3D::get_configuration_warnings() const {
-	PackedStringArray warnings = Node::get_configuration_warnings();
+	PackedStringArray warnings = Node3D::get_configuration_warnings();
 
 	if (start_position.is_equal_approx(end_position)) {
 		warnings.push_back(RTR("NavigationLink3D start position should be different than the end position to be useful."));

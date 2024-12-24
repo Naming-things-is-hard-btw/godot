@@ -52,6 +52,7 @@ class AnimationPlayerEditor : public VBoxContainer {
 	AnimationPlayerEditorPlugin *plugin = nullptr;
 	AnimationMixer *original_node = nullptr; // For pinned mark in SceneTree.
 	AnimationPlayer *player = nullptr; // For AnimationPlayerEditor, could be dummy.
+	ObjectID cached_root_node_id;
 	bool is_dummy = false;
 
 	enum {
@@ -178,6 +179,7 @@ class AnimationPlayerEditor : public VBoxContainer {
 
 	void _select_anim_by_name(const String &p_anim);
 	float _get_editor_step() const;
+	void _go_to_nearest_keyframe(bool p_backward);
 	void _play_pressed();
 	void _play_from_pressed();
 	void _play_bw_pressed();
@@ -252,6 +254,7 @@ public:
 	AnimationMixer *get_editing_node() const;
 	AnimationPlayer *get_player() const;
 	AnimationMixer *fetch_mixer_for_library() const;
+	Node *get_cached_root_node() const;
 
 	static AnimationPlayerEditor *get_singleton() { return singleton; }
 
@@ -296,7 +299,7 @@ public:
 	virtual Dictionary get_state() const override { return anim_editor->get_state(); }
 	virtual void set_state(const Dictionary &p_state) override { anim_editor->set_state(p_state); }
 
-	virtual String get_name() const override { return "Anim"; }
+	virtual String get_plugin_name() const override { return "Anim"; }
 	bool has_main_screen() const override { return false; }
 	virtual void edit(Object *p_object) override;
 	virtual bool handles(Object *p_object) const override;
@@ -330,9 +333,35 @@ public:
 	bool has_main_screen() const override { return false; }
 	virtual bool handles(Object *p_object) const override;
 
-	virtual String get_name() const override { return "AnimationTrackKeyEdit"; }
+	virtual String get_plugin_name() const override { return "AnimationTrackKeyEdit"; }
 
 	AnimationTrackKeyEditEditorPlugin();
+};
+
+// AnimationMarkerKeyEditEditorPlugin
+
+class EditorInspectorPluginAnimationMarkerKeyEdit : public EditorInspectorPlugin {
+	GDCLASS(EditorInspectorPluginAnimationMarkerKeyEdit, EditorInspectorPlugin);
+
+	AnimationMarkerKeyEditEditor *amk_editor = nullptr;
+
+public:
+	virtual bool can_handle(Object *p_object) override;
+	virtual void parse_begin(Object *p_object) override;
+};
+
+class AnimationMarkerKeyEditEditorPlugin : public EditorPlugin {
+	GDCLASS(AnimationMarkerKeyEditEditorPlugin, EditorPlugin);
+
+	EditorInspectorPluginAnimationMarkerKeyEdit *amk_plugin = nullptr;
+
+public:
+	bool has_main_screen() const override { return false; }
+	virtual bool handles(Object *p_object) const override;
+
+	virtual String get_plugin_name() const override { return "AnimationMarkerKeyEdit"; }
+
+	AnimationMarkerKeyEditEditorPlugin();
 };
 
 #endif // ANIMATION_PLAYER_EDITOR_PLUGIN_H

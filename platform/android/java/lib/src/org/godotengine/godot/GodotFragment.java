@@ -474,7 +474,7 @@ public class GodotFragment extends Fragment implements IDownloaderClient, GodotH
 		if (parentHost != null) {
 			return parentHost.onNewGodotInstanceRequested(args);
 		}
-		return 0;
+		return -1;
 	}
 
 	@Override
@@ -500,5 +500,13 @@ public class GodotFragment extends Fragment implements IDownloaderClient, GodotH
 			return parentHost.verifyApk(apkPath);
 		}
 		return Error.ERR_UNAVAILABLE;
+	}
+
+	@Override
+	public boolean supportsFeature(String featureTag) {
+		if (parentHost != null) {
+			return parentHost.supportsFeature(featureTag);
+		}
+		return false;
 	}
 }

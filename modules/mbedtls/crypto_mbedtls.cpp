@@ -30,16 +30,10 @@
 
 #include "crypto_mbedtls.h"
 
-#include "core/config/engine.h"
-#include "core/config/project_settings.h"
 #include "core/io/certs_compressed.gen.h"
 #include "core/io/compression.h"
 #include "core/io/file_access.h"
 #include "core/os/os.h"
-
-#ifdef TOOLS_ENABLED
-#include "editor/editor_settings.h"
-#endif
 
 #include <mbedtls/debug.h>
 #include <mbedtls/md.h>
@@ -314,10 +308,6 @@ Crypto *CryptoMbedTLS::create(bool p_notify_postinitialize) {
 }
 
 void CryptoMbedTLS::initialize_crypto() {
-#ifdef DEBUG_ENABLED
-	mbedtls_debug_set_threshold(1);
-#endif
-
 	Crypto::_create = create;
 	Crypto::_load_default_certificates = load_default_certificates;
 	X509CertificateMbedTLS::make_default();
